@@ -85,7 +85,9 @@ import {
 } from './cesiumExtra/boundingPolygon.js'
 
 // Set Cesium token from environment variable
-Ion.defaultAccessToken = process.env.VUE_APP_CESIUM_TOKEN || ''
+// Ion.defaultAccessToken = process.env.VUE_APP_CESIUM_TOKEN || ''
+// eslint-disable-next-line max-len
+Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJjOGUzNmQyZi00MGQxLTRiYzMtYjgwOC1hNWM5MDk1MDZkYTAiLCJpZCI6MzE0MjI5LCJpYXQiOjE3NTA0ODc1MjF9.HaoLe9ruNMEdTJyDtkQhll1FVg0YUTB9ezS4JlQgQQU'
 
 const colorCoderMode = new ColorCoderMode(store)
 const colorCoderRange = new ColorCoderRange(store)
@@ -263,7 +265,7 @@ export default {
                         shadows: true,
                         // eslint-disable-next-line
                         baseLayer: new ImageryLayer.fromProviderAsync(
-                            IonImageryProvider.fromAssetId(3954)
+                            IonImageryProvider.fromAssetId(2)
                         ),
                         imageryProviderViewModels: imageryProviders,
                         orderIndependentTranslucency: false,
@@ -602,14 +604,21 @@ export default {
         },
 
         getTimeStart () {
-            let date = null
-            try {
-                date = JulianDate.fromDate(this.state.metadata.startTime)
-            } catch (e) {
-                console.log(e)
-                date = JulianDate.fromDate(new Date(2015, 2, 25, 16))
+            // let date = null
+            // try {
+            //     date = JulianDate.fromDate(this.state.metadata.startTime)
+            // } catch (e) {
+            //     console.log(e)
+            //     date = JulianDate.fromDate(new Date(2015, 2, 25, 16))
+            // }
+            // return date
+            const rawTime = this.state?.metadata?.startTime
+            if (rawTime && !isNaN(Date.parse(rawTime))) {
+                return JulianDate.fromDate(new Date(rawTime))
+            } else {
+                console.warn('Invalid or missing startTime, using fallback time')
+                return JulianDate.fromDate(new Date(2015, 2, 25, 16))
             }
-            return date
         },
 
         mouseIsOnPoint (point) {
